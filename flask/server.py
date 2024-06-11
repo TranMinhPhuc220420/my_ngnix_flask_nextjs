@@ -3,31 +3,41 @@ import os
 
 from flask_cors import CORS, cross_origin
 from flask import Flask
-from pymongo import MongoClient
+
+from dotenv import load_dotenv
 
 from blueprints.auth.auth import auth_bp
 
-from dotenv import load_dotenv
+import plt_inc
+
 load_dotenv()
 
 app = Flask(__name__, static_folder='static')
-app.config['UPLOAD_FOLDER'] = 'static/videos'
+app.config['UPLOAD_FOLDER'] = plt_inc.UPLOAD_FOLDER
 
 # ALL BLUEPRINTS...
 app.register_blueprint(auth_bp)
 
+
 @app.errorhandler(400)
 def handle_bad_request(e):
-	return 'Bad Request', 400
+    return 'Bad Request', 400
+
+
 @app.errorhandler(502)
 def handle_bad_gateway(e):
-	return 'Bad Gateway', 502
+    return 'Bad Gateway', 502
+
+
 @app.errorhandler(404)
 def handle_notfound(e):
-	return 'Not Found', 404
+    return 'Not Found', 404
+
+
 @app.errorhandler(500)
 def handle_internalservererror(e):
-	return 'Internal Server Error', 500
+    return 'Internal Server Error', 500
+
 
 CORS(app, origins=[os.getenv('CORS_ORIGINS')], supports_credentials=True)
 
